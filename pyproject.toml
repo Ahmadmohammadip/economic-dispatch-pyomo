@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ed-model"
+version = "0.1.0"
+description = "Multi-period DC-OPF Economic Dispatch with ramping, renewables, and storage — built with Pyomo"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Ahmad" }]
+keywords = ["optimization", "power-systems", "pyomo", "economic-dispatch", "energy"]
+
+dependencies = [
+    "pyomo>=6.7",
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+solvers = [
+    "highspy>=1.7",
+]
+viz = [
+    "matplotlib>=3.8",
+    "streamlit>=1.35",
+]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+    "ipopt",
+]
+
+[project.urls]
+Repository = "https://github.com/<your-username>/economic-dispatch-pyomo"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Miniconda (needed for Ipopt binary)
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+          channels: conda-forge
+          auto-update-conda: true
+
+      - name: Cache conda packages
+        uses: actions/cache@v4
+        with:
+          path: ~/conda_pkgs_dir
+          key: conda-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}
+
+      - name: Install Ipopt and HiGHS via conda
+        shell: bash -l {0}
+        run: conda install -y -c conda-forge ipopt highspy
+
+      - name: Install package
+        shell: bash -l {0}
+        run: pip install -e ".[dev,solvers,viz]"
+
+      - name: Lint with ruff
+        shell: bash -l {0}
+        run: ruff check src tests app
+
+      - name: Run tests
+        shell: bash -l {0}
+        run: pytest -v
+
+      - name: Streamlit app syntax smoke test
+        shell: bash -l {0}
+        run: python -m py_compile app/streamlit_app.py

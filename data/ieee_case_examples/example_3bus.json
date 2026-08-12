@@ -1,0 +1,42 @@
+{
+  "buses": [
+    {"name": "A", "is_reference": true},
+    {"name": "B", "is_reference": false},
+    {"name": "C", "is_reference": false}
+  ],
+  "lines": [
+    {"name": "L1", "from_bus": "A", "to_bus": "B", "susceptance": 10.0, "limit": 120},
+    {"name": "L2", "from_bus": "B", "to_bus": "C", "susceptance": 10.0, "limit": 80}
+  ],
+  "generators": [
+    {
+      "name": "G1", "bus": "A", "p_min": 0, "p_max": 250,
+      "cost_type": "quadratic", "c2": 0.01, "c1": 12, "c0": 0,
+      "ramp_up": 80, "ramp_down": 80, "p_initial": 100
+    },
+    {
+      "name": "G2", "bus": "C", "p_min": 0, "p_max": 150,
+      "cost_type": "piecewise", "c0": 50,
+      "segments": [
+        {"width": 75, "marginal_cost": 18},
+        {"width": 75, "marginal_cost": 24}
+      ],
+      "ramp_up": 60, "ramp_down": 60, "p_initial": 50
+    }
+  ],
+  "renewables": [
+    {"name": "Wind1", "bus": "B", "forecast": [40, 70]}
+  ],
+  "storages": [
+    {
+      "name": "Batt1", "bus": "B",
+      "energy_capacity": 100, "charge_limit": 40, "discharge_limit": 40,
+      "charge_efficiency": 0.95, "discharge_efficiency": 0.95, "initial_soc": 50
+    }
+  ],
+  "demand": {
+    "A": [120, 150],
+    "B": [60, 90],
+    "C": [70, 80]
+  }
+}
