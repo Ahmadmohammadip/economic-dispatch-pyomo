@@ -98,6 +98,19 @@ No unit commitment, no storage degradation cost, no non-convex
 (valve-point) cost curves, DC (lossless) power flow only. Full list with
 rationale in `docs/formulation.md`.
 
+## Companion repos
+
+Three standalone optimization models built to the same conventions — validated
+dataclasses that fail loudly at construction, a Pyomo builder that never touches
+raw files, and a result dataclass rather than a live model — but sharing no code.
+
+- [battery-storage-optimization-pyomo](https://github.com/Ahmadmohammadip/battery-storage-optimization-pyomo)
+  — battery energy arbitrage co-optimized with frequency regulation capacity
+  (revenue stacking) as a single LP.
+- [cvrp-optimization-pyomo](https://github.com/Ahmadmohammadip/cvrp-optimization-pyomo)
+  — exact MILP for the Capacitated Vehicle Routing Problem, with a measured
+  benchmark of where exact methods stop scaling.
+
 ## License
 
 MIT — see `LICENSE`.
