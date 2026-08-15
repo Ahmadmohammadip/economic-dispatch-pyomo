@@ -39,6 +39,11 @@ Requires a solver: [HiGHS](https://highs.dev/) (installed via the
 quadratic-cost generator. Ipopt is not available via pip on all
 platforms — see `.github/workflows/ci.yml` for a conda-based install.
 
+If you do not have Ipopt, use
+`data/ieee_case_examples/example_3bus_piecewise.json`. It is the same 3-bus
+network with every generator on the piecewise-linear cost model, which makes it
+a pure LP that HiGHS solves on its own — `recommended_solver()` will tell you so.
+
 ## Quickstart
 
 ```python
@@ -62,6 +67,27 @@ print(result.dispatch_for_period(1))
 print(result.total_cost)
 ```
 
+## What it produces
+
+```python
+from ed_model.viz import plot_dispatch_stack
+
+plot_dispatch_stack(system, result).savefig("dispatch_stack.png")
+```
+
+![Dispatch stack against demand on the 3-bus piecewise example](docs/images/dispatch_stack.png)
+
+The eight-period piecewise example, solved. G1 is the cheaper unit and fills up
+to its 250 MW cap by period 3, after which the more expensive G2 covers the peak;
+wind sits on top, taken in full because its marginal cost is zero.
+
+Where the demand line runs above the stack — periods 1, 4 and 5 — the difference
+is the battery discharging. `plot_dispatch_stack` stacks generation and
+renewables only, so storage shows up as the gap rather than as a band.
+
+`plot_lmp_heatmap`, `plot_storage_soc`, and `plot_line_loading` cover locational
+prices, state of charge, and which lines are binding.
+
 ## Repo layout
 
 ```
@@ -76,7 +102,7 @@ economic-dispatch-pyomo/
 ├── notebooks/01_walkthrough.ipynb
 ├── app/streamlit_app.py    # interactive 2-bus demo
 ├── tests/
-├── docs/formulation.md
+├── docs/                   # formulation.md, images/
 └── .github/workflows/ci.yml
 ```
 

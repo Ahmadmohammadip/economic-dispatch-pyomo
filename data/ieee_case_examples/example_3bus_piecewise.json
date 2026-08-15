@@ -1,0 +1,58 @@
+{
+  "_comment": [
+    "Same 3-bus topology as example_3bus.json, but every generator uses the",
+    "piecewise-linear cost model, which makes this a pure LP that HiGHS can solve",
+    "on its own - no Ipopt required. G1's segments approximate the quadratic cost",
+    "0.01p^2 + 12p used in the quadratic version: its marginal cost 0.02p + 12",
+    "runs from 12 to 17 across [0, 250], sampled at the midpoint of each 50 MW",
+    "segment. Extended to eight periods so the demand profile has a shape.",
+    "Synthetic, not a published IEEE test case."
+  ],
+  "buses": [
+    {"name": "A", "is_reference": true},
+    {"name": "B", "is_reference": false},
+    {"name": "C", "is_reference": false}
+  ],
+  "lines": [
+    {"name": "L1", "from_bus": "A", "to_bus": "B", "susceptance": 10.0, "limit": 120},
+    {"name": "L2", "from_bus": "B", "to_bus": "C", "susceptance": 10.0, "limit": 80}
+  ],
+  "generators": [
+    {
+      "name": "G1", "bus": "A", "p_min": 0, "p_max": 250,
+      "cost_type": "piecewise", "c0": 0,
+      "segments": [
+        {"width": 50, "marginal_cost": 12.5},
+        {"width": 50, "marginal_cost": 13.5},
+        {"width": 50, "marginal_cost": 14.5},
+        {"width": 50, "marginal_cost": 15.5},
+        {"width": 50, "marginal_cost": 16.5}
+      ],
+      "ramp_up": 80, "ramp_down": 80, "p_initial": 100
+    },
+    {
+      "name": "G2", "bus": "C", "p_min": 0, "p_max": 150,
+      "cost_type": "piecewise", "c0": 50,
+      "segments": [
+        {"width": 75, "marginal_cost": 18},
+        {"width": 75, "marginal_cost": 24}
+      ],
+      "ramp_up": 60, "ramp_down": 60, "p_initial": 50
+    }
+  ],
+  "renewables": [
+    {"name": "Wind1", "bus": "B", "forecast": [40, 45, 55, 60, 50, 45, 40, 35]}
+  ],
+  "storages": [
+    {
+      "name": "Batt1", "bus": "B",
+      "energy_capacity": 100, "charge_limit": 40, "discharge_limit": 40,
+      "charge_efficiency": 0.95, "discharge_efficiency": 0.95, "initial_soc": 50
+    }
+  ],
+  "demand": {
+    "A": [120, 130, 150, 170, 190, 175, 150, 130],
+    "B": [60, 65, 75, 85, 95, 88, 75, 65],
+    "C": [70, 75, 85, 95, 105, 98, 85, 75]
+  }
+}
